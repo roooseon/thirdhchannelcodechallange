@@ -10,8 +10,8 @@ public class ThirdChannelMain {
 		ReadandCreateNewFile readInputFile = new ReadandCreateNewFile();
 		
 		String workingDirectory = System.getProperty("user.dir");		
-		File inputFile = new File(workingDirectory + "\\Input\\2");
-		File template = new File(workingDirectory + "\\Template\\template56");
+		File inputFile = new File(workingDirectory + "\\Input\\4");
+		File template = new File(workingDirectory + "\\Template\\template2");
 
 		readInputFile.createNewFile(inputFile, template);
 		
