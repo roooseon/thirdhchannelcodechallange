@@ -75,8 +75,7 @@ public class ReadandCreateNewFile {
 
 			}
 		} catch (Exception e) {
-			System.out.println("Template not found");
-			System.exit(0);
+			System.out.println("Destination folder not found");
 		}
 	}
 
