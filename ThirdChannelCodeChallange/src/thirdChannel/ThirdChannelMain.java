@@ -7,16 +7,13 @@ public class ThirdChannelMain {
 
 	public static void main(String[] args) throws IOException {
 
-		ReadFile readInputFile = new ReadFile();
-		WriteNewFile writeOutputFile = new WriteNewFile();
+		ReadandCreateNewFile readInputFile = new ReadandCreateNewFile();
+		//WriteNewFile writeOutputFile = new WriteNewFile();
+		String workingDirectory = System.getProperty("user.dir");		
+		File inputFile = new File(workingDirectory + "\\Input\\2");
+		File template = new File(workingDirectory + "\\Template\\template");
 
-		
-		File inputFile = new File("C:\\Users\\Rojan\\Documents\\ThirdChannel\\Input\\5");
-		File template = new File("C:\\Users\\Rojan\\Documents\\ThirdChannel\\Template\\template");
-
-		String personName = readInputFile.getPersonName(inputFile);
-		writeOutputFile.writeNewFile(template, personName);
-
+		readInputFile.createNewFile(inputFile, template);
 		
 
 	}
