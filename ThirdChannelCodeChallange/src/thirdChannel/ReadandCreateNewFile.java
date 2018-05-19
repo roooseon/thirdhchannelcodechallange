@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 
 
@@ -20,8 +19,7 @@ public class ReadandCreateNewFile {
 		
 		String str;
 
-		ArrayList<String> data = new ArrayList<String>();
-		// catch exception on template
+		// catch exception on template 
 		try {
 			bffReader = new BufferedReader(new FileReader(template));
 		} catch (FileNotFoundException e) {
@@ -78,6 +76,8 @@ public class ReadandCreateNewFile {
 			e.printStackTrace();
 		}
 
+		
+		ArrayList<String> data = new ArrayList<String>();
 		data.add(fileName);
 		data.add(personName);
 		data.add(product);
@@ -104,8 +104,10 @@ public class ReadandCreateNewFile {
 
 		
 		String workingDirectory = System.getProperty("user.dir");
-	
+	   
 		for (String d : data) {
+			
+			 //checks empty value before writing a file
 			if (!(d.equals(null) || d.equals(""))) {
 				try {				    
 				    BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -126,7 +128,7 @@ public class ReadandCreateNewFile {
 				    writer.write(result);                
 				    writer.close();                
 				} catch (IOException ioe) {
-				    ioe.printStackTrace();
+					System.out.println("Write error");
 				}		
 
 			} else {
@@ -135,8 +137,7 @@ public class ReadandCreateNewFile {
 					writer2.write("");
 					writer2.close();
 				} catch (IOException e) {
-					
-					e.printStackTrace();
+					System.out.println("Write error");
 				}
 				 
 			}
