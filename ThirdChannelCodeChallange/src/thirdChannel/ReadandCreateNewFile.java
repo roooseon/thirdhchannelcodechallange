@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 
 
@@ -84,17 +85,8 @@ public class ReadandCreateNewFile {
 		data.add(giftValue);
 		data.add(representative);
 
-		// only if name is found app will call writeNewFile method
-
-		for (String d : data) {
-			if (!(d.equals(null) || d.equals(""))) {
-				writeNewFile(template, data);
-
-			} else {
-				System.out.println("Data not found");
-				System.exit(0);
-			}
-		}
+		writeNewFile(template, data);
+		
 	}
 
 
@@ -113,28 +105,45 @@ public class ReadandCreateNewFile {
 		
 		String workingDirectory = System.getProperty("user.dir");
 	
-		try {
-		    
-		    BufferedReader reader = new BufferedReader(new FileReader(file));
-		    String line = "", oldtext = "";
-		    while ((line = reader.readLine()) != null) {
-		        oldtext += line + "\r\n";
-		    }
-		    reader.close();
-		    
-		    String result = oldtext.replace(nameToReplace, data.get(1))
-                    .replace(productToReplace, data.get(2))
-                    .replace(giftToReplace, data.get(3))
-                    .replace(giftValueToReplace, data.get(4))
-                    .replace(representativeToReplace, data.get(5));
+		for (String d : data) {
+			if (!(d.equals(null) || d.equals(""))) {
+				try {				    
+				    BufferedReader reader = new BufferedReader(new FileReader(file));
+				    String line = "", oldtext = "";
+				    while ((line = reader.readLine()) != null) {
+				        oldtext += line + "\r\n";
+				    }
+				    reader.close();
+				    
+				    String result = oldtext.replace(nameToReplace, data.get(1))
+		                    .replace(productToReplace, data.get(2))
+		                    .replace(giftToReplace, data.get(3))
+		                    .replace(giftValueToReplace, data.get(4))
+		                    .replace(representativeToReplace, data.get(5));
 
-		    // Write updated record to a file
-		    FileWriter writer = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
-		    writer.write(result);                
-		    writer.close();                
-		} catch (IOException ioe) {
-		    ioe.printStackTrace();
-		}		
+				    // Write updated record to a file
+				    FileWriter writer = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
+				    writer.write(result);                
+				    writer.close();                
+				} catch (IOException ioe) {
+				    ioe.printStackTrace();
+				}		
+
+			} else {
+				try{
+			    FileWriter writer2 = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
+					writer2.write("");
+					writer2.close();
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+				 
+			}
+		}
+		
+		
+		
 		
 	}
 }
