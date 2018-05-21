@@ -39,12 +39,13 @@ public class ReadandCreateNewFile {
 	}
 
 	// This method scans the source file for data and returns HashMap with
-	private static HashMap<String, String> scanFile(File inputFileDataToChange, String[] change, File template) {
+	private static HashMap<String, String> scanFile(File inputFileDataToChange, String[] changesToMake, File template) {
 
+		
 		BufferedReader bffReader = null;
 		BufferedReader bffReader2 = null;
 
-		String str;
+		
 
 		// HashMap to store dataToChange e.g. name, gift etc and it's
 		// corresponding value
@@ -71,25 +72,29 @@ public class ReadandCreateNewFile {
 		// file name for new output file
 		dataChanged.put("fileName", inputFileDataToChange.getName());
 
+		//Read input file with data
+		String stringsFromInputFile;
 		try {
-			while ((str = bffReader2.readLine()) != null) {
+			while ((stringsFromInputFile = bffReader2.readLine()) != null) {
 
-				for (int i = 0; i < change.length; i++) {
+				for (int i = 0; i < changesToMake.length; i++) {
 
-					if (str.contains(change[i])) {
+					// 
+					if (stringsFromInputFile.contains(changesToMake[i])) {
 						// string after equals (=) in input file
-						String tempAfterEquals = str.substring(str.lastIndexOf("=") + 1);
+						String tempAfterEquals = stringsFromInputFile.substring(stringsFromInputFile.lastIndexOf("=") + 1);
 
 						// string before equals (=) in input file
-						String tempBeforeEquals = str.substring(0, str.lastIndexOf("="));
+						String tempBeforeEquals = stringsFromInputFile.substring(0, stringsFromInputFile.lastIndexOf("="));
 						tempAfterEquals = tempAfterEquals.trim();
 						tempAfterEquals = tempAfterEquals.replaceAll("\\s+", " ");
 						
 						tempBeforeEquals = tempBeforeEquals.trim();
 						tempBeforeEquals = tempBeforeEquals.replaceAll("\\s+", " ");
 						
-						if (tempBeforeEquals.equals(change[i])) {
-							dataChanged.put(change[i], tempAfterEquals);
+						// check word match
+						if (tempBeforeEquals.equals(changesToMake[i])) {
+							dataChanged.put(changesToMake[i], tempAfterEquals);
 						}
 
 					}
