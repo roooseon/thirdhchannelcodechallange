@@ -42,6 +42,21 @@ public class ThirdChannelMainTest {
 		  assertNull("Actual had more lines then the expected.", actual.readLine());
 		}
 	
+	@Test
+	public void assertReaders3() throws IOException {
+		String workingDirectory = System.getProperty("user.dir");
+
+		BufferedReader expected = new BufferedReader(new FileReader(workingDirectory + "\\Output\\3"));
+		BufferedReader actual = new BufferedReader(new FileReader(workingDirectory + "\\Expected\\3"));
+		
+		  String expectedLine;
+		  while ((expectedLine = expected.readLine()) != null) {
+		    String actualLine = actual.readLine();
+		    assertNotNull("Expected had more lines then the actual.", actualLine);
+		    assertEquals(expectedLine, actualLine);
+		  }
+		  assertNull("Actual had more lines then the expected.", actual.readLine());
+		}
 	
 	@Test
 	public void assertReaders4() throws IOException {
@@ -58,6 +73,23 @@ public class ThirdChannelMainTest {
 		  }
 		  assertNull("Actual had more lines then the expected.", actual.readLine());
 		}
+	
+	@Test
+	public void assertReaders5() throws IOException {
+		String workingDirectory = System.getProperty("user.dir");
+
+		BufferedReader expected = new BufferedReader(new FileReader(workingDirectory + "\\Output\\5"));
+		BufferedReader actual = new BufferedReader(new FileReader(workingDirectory + "\\Expected\\5"));
+		
+		  String expectedLine;
+		  while ((expectedLine = expected.readLine()) != null) {
+		    String actualLine = actual.readLine();
+		    assertNotNull("Expected had more lines then the actual.", actualLine);
+		    assertEquals(expectedLine, actualLine);
+		  }
+		  assertNull("Actual had more lines then the expected.", actual.readLine());
+		}
+	
 }
 
 

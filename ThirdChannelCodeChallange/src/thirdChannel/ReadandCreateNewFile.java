@@ -6,20 +6,51 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+
+import java.util.HashMap;
 
 
 public class ReadandCreateNewFile {
 
-	public void createNewFile(File inputFile, File template) {
-		String personName = "", product = "", gift = "", giftValue = "", representative = "";
-		String fileName = inputFile.getName();
+	// This methods calls scanFile and writeNewFileWithChanges methods accordingly
+	public void makeChanges(File inputFileDataToChange, String[] change, File template) {
+
+		// HashMap returned with data to change and it's corresponding value by
+		// scanFile method
+		HashMap<String, String> dataChanged = scanFile(inputFileDataToChange, change, template);
+
+		/*
+		 * this calls writeNewFileWithChanges only if all data required data are
+		 * found in input file to be written in a new output file otherwise a
+		 * new empty file is written directly
+		 */
+		if (dataChanged.size() == change.length + 1) {
+			writeNewFileWithChanges(template, dataChanged);
+		} else {
+			try {
+				String workingDirectory = System.getProperty("user.dir");
+				FileWriter writer = new FileWriter(workingDirectory + "\\Output\\" + dataChanged.get("fileName"));
+				writer.write("");
+				writer.close();
+			} catch (IOException err) {
+				System.out.println("Write error");
+			}
+		}
+	}
+
+	// This method scans the source file for data and returns HashMap with
+	private static HashMap<String, String> scanFile(File inputFileDataToChange, String[] change, File template) {
+
 		BufferedReader bffReader = null;
 		BufferedReader bffReader2 = null;
-		
+
 		String str;
 
-		// catch exception on template 
+		// HashMap to store dataToChange e.g. name, gift etc and it's
+		// corresponding value
+		HashMap<String, String> dataChanged = new HashMap<>();
+
+		// catch exception on template
 		try {
 			bffReader = new BufferedReader(new FileReader(template));
 		} catch (FileNotFoundException e) {
@@ -29,123 +60,101 @@ public class ReadandCreateNewFile {
 
 		// catch no file found exception on input file
 		try {
-			bffReader2 = new BufferedReader(new FileReader(inputFile));
+			bffReader2 = new BufferedReader(new FileReader(inputFileDataToChange));
 		} catch (FileNotFoundException e) {
 			System.out.println("Input file not found");
 			System.exit(0);
-		}
-
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		// search for name in input file
+		// file name for new output file
+		dataChanged.put("fileName", inputFileDataToChange.getName());
+
 		try {
-			while ((str = bffReader2.readLine()) != null)
-				if (str.contains("name")) {
-					String temp = str.substring(str.lastIndexOf("=") + 1);
-					personName = temp.trim();
-					personName = personName.replaceAll("\\s+", " ");
-				} else if (str.contains("product")) {
-					String temp2 = str.substring(str.lastIndexOf("=") + 1);
-					product = temp2.trim();
-					product = product.replaceAll("\\s+", " ");
-				}
+			while ((str = bffReader2.readLine()) != null) {
 
-				else if (str.contains("gift")) {
+				for (int i = 0; i < change.length; i++) {
 
-					if (str.contains("gift-value")) {
-						String temp3 = str.substring(str.lastIndexOf("=") + 1);
-						giftValue = temp3.trim();
-						giftValue = giftValue.replaceAll("\\s+", " ");
-					} else {
-						String temp4 = str.substring(str.lastIndexOf("=") + 1);
-						gift = temp4.trim();
-						gift = gift.replaceAll("\\s+", " ");
+					if (str.contains(change[i])) {
+						// string after equals (=) in input file
+						String tempAfterEquals = str.substring(str.lastIndexOf("=") + 1);
+
+						// string before equals (=) in input file
+						String tempBeforeEquals = str.substring(0, str.lastIndexOf("="));
+						tempAfterEquals = tempAfterEquals.trim();
+						tempAfterEquals = tempAfterEquals.replaceAll("\\s+", " ");
+						
+						tempBeforeEquals = tempBeforeEquals.trim();
+						tempBeforeEquals = tempBeforeEquals.replaceAll("\\s+", " ");
+						
+						if (tempBeforeEquals.equals(change[i])) {
+							dataChanged.put(change[i], tempAfterEquals);
+						}
+
 					}
 
-				} else if (str.contains("gift")) {
-
-				} else if (str.contains("representative")) {
-					String temp5 = str.substring(str.lastIndexOf("=") + 1);
-					representative = temp5.trim();
-					representative = representative.replaceAll("\\s+", " ");
 				}
 
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		
-		ArrayList<String> data = new ArrayList<String>();
-		data.add(fileName);
-		data.add(personName);
-		data.add(product);
-		data.add(gift);
-		data.add(giftValue);
-		data.add(representative);
+		return dataChanged;
 
-		writeNewFile(template, data);
-		
 	}
 
-
-
-	public static void writeNewFile(File template, ArrayList<String> data) {
-
+	// this method writes changed data to a new output file
+	private static void writeNewFileWithChanges(File template, HashMap<String, String> data) {
 		File file = template;
-		String nameToReplace = "((name))";
-		String productToReplace = "((product))";
-		String giftToReplace = "((gift))";
-		String giftValueToReplace = "((gift-value))";
-		String representativeToReplace = "((representative))";
-		String outputFileName = data.get(0);
-		
-
-		
+		String outputFileName = data.get("fileName").toString();
 		String workingDirectory = System.getProperty("user.dir");
-	   
-		for (String d : data) {
-			
-			 //checks empty value before writing a file
-			if (!(d.equals(null) || d.equals(""))) {
-				try {				    
-				    BufferedReader reader = new BufferedReader(new FileReader(file));
-				    String line = "", oldtext = "";
-				    while ((line = reader.readLine()) != null) {
-				        oldtext += line + "\r\n";
-				    }
-				    reader.close();
-				    
-				    String result = oldtext.replace(nameToReplace, data.get(1))
-		                    .replace(productToReplace, data.get(2))
-		                    .replace(giftToReplace, data.get(3))
-		                    .replace(giftValueToReplace, data.get(4))
-		                    .replace(representativeToReplace, data.get(5));
 
-				    // Write updated record to a file
-				    FileWriter writer = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
-				    writer.write(result);                
-				    writer.close();                
-				} catch (IOException ioe) {
-					System.out.println("Write error");
-				}		
+		String oldTextFromTemplate = "";
 
-			} else {
-				try{
-			    FileWriter writer2 = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
-					writer2.write("");
-					writer2.close();
-				} catch (IOException e) {
-					System.out.println("Write error");
-				}
-				 
+		//this reads template
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = "";
+			while ((line = reader.readLine()) != null) {
+				oldTextFromTemplate += line + "\r\n";
 			}
+			reader.close();
+
+		} 
+		// catches error while reading template
+		catch (Exception err) {
+			System.out.println("Error occured while reading template file");
 		}
 		
 		
-		
-		
-	}
-}
+		//writes changes on a new output file
+		try {
+			String result = oldTextFromTemplate;
+			for (String hMapValue : data.keySet()) {
 
+				String key = hMapValue.toString();
+				String value = data.get(hMapValue).toString();
+
+				if (!(value.equals(null)) || !(value.equals(""))) {
+					oldTextFromTemplate = result;
+					result = oldTextFromTemplate.replace(("((" + key + "))"), value);
+				} else {
+					result = "";
+				}
+			}
+
+			
+			FileWriter writer = new FileWriter(workingDirectory + "\\Output\\" + outputFileName);
+			writer.write(result);
+			writer.close();
+			
+		//catches errors while on writing new output file
+		} catch (Exception err) {
+			System.out.println("Write error");
+		}
+
+	}
+
+}
